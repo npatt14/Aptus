@@ -7,14 +7,36 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") });
 
 // Mock OpenAI module
 jest.mock("openai", () => {
-  return {
-    default: jest.fn().mockImplementation(() => ({
-      chat: {
-        completions: {
-          create: jest.fn(),
+  const mockCreate = jest.fn().mockResolvedValue({
+    choices: [
+      {
+        message: {
+          content: JSON.stringify({
+            position: "nurse",
+            start_time: "2024-01-02T09:00:00-05:00",
+            end_time: "2024-01-02T17:00:00-05:00",
+            rate: "$25/hr",
+          }),
         },
       },
-    })),
+    ],
+  });
+
+  // Create a proper class mock
+  class MockOpenAI {
+    constructor() {
+      this.chat = {
+        completions: {
+          create: mockCreate,
+        },
+      };
+    }
+  }
+
+  // Make it work with both import styles
+  return {
+    __esModule: true,
+    default: MockOpenAI,
   };
 });
 
