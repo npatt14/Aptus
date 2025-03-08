@@ -33,10 +33,12 @@ const App: React.FC = () => {
     null
   );
   const [error, setError] = useState<boolean>(false);
+  const [shiftAdded, setShiftAdded] = useState<number>(0);
 
   const handleShiftSubmitted = (response: ApiResponse) => {
     setSubmittedShift(response);
     setError(false);
+    setShiftAdded((prev) => prev + 1);
   };
 
   const handleError = () => {
@@ -54,7 +56,7 @@ const App: React.FC = () => {
       <header className="bg-dark-card border-b border-dark-border shadow-md">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-darkblue-300">
-            AI Healthcare Shift Scheduler
+            Shift Scheduler
           </h1>
         </div>
       </header>
@@ -92,14 +94,14 @@ const App: React.FC = () => {
             </>
           )}
 
-          <ShiftList />
+          <ShiftList refreshTrigger={shiftAdded} />
         </div>
       </main>
 
       <footer className="bg-dark-card mt-12 py-6 border-t border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-dark-muted text-sm">
-            AI Healthcare Shift Scheduler &copy; {new Date().getFullYear()}
+            Shift Scheduler &copy; {new Date().getFullYear()}
           </p>
         </div>
       </footer>

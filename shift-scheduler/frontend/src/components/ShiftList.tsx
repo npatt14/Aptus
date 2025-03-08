@@ -12,7 +12,11 @@ interface Shift {
   created_at: string;
 }
 
-const ShiftList: React.FC = () => {
+interface ShiftListProps {
+  refreshTrigger?: number; // Optional prop to trigger refresh
+}
+
+const ShiftList: React.FC<ShiftListProps> = ({ refreshTrigger = 0 }) => {
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,8 +24,10 @@ const ShiftList: React.FC = () => {
   useEffect(() => {
     const fetchShifts = async () => {
       try {
+        setIsLoading(true);
         const data = await getAllShifts();
         setShifts(data);
+        setError(null);
       } catch (err) {
         setError("Failed to load shifts. Please try again later.");
         console.error(err);
@@ -31,7 +37,7 @@ const ShiftList: React.FC = () => {
     };
 
     fetchShifts();
-  }, []);
+  }, [refreshTrigger]);
 
   // Format the dates to be more readable
   const formatDate = (dateString: string) => {
