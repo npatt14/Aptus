@@ -15,12 +15,27 @@ interface Shift {
   created_at: string;
 }
 
+interface ApiResponse {
+  shift: Shift;
+  evaluation?: {
+    valid: boolean;
+    results: {
+      requiredFields: boolean;
+      dateFormats: boolean;
+      timeSequence: boolean;
+      position: boolean;
+    };
+  };
+}
+
 const App: React.FC = () => {
-  const [submittedShift, setSubmittedShift] = useState<Shift | null>(null);
+  const [submittedShift, setSubmittedShift] = useState<ApiResponse | null>(
+    null
+  );
   const [error, setError] = useState<boolean>(false);
 
-  const handleShiftSubmitted = (shift: Shift) => {
-    setSubmittedShift(shift);
+  const handleShiftSubmitted = (response: ApiResponse) => {
+    setSubmittedShift(response);
     setError(false);
   };
 
@@ -35,17 +50,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-dark-bg text-dark-text">
+      <header className="bg-dark-card border-b border-dark-border shadow-md">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-darkblue-300">
             AI Healthcare Shift Scheduler
           </h1>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center space-y-6">
+      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center space-y-8">
           {!submittedShift && !error && (
             <ShiftInput
               onShiftSubmitted={handleShiftSubmitted}
@@ -55,10 +70,10 @@ const App: React.FC = () => {
 
           {submittedShift && (
             <>
-              <ShiftConfirmation shift={submittedShift} />
+              <ShiftConfirmation shift={submittedShift.shift} />
               <button
                 onClick={handleReset}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="mt-6 bg-darkblue-600 hover:bg-darkblue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
               >
                 Schedule Another Shift
               </button>
@@ -70,7 +85,7 @@ const App: React.FC = () => {
               <ErrorMessage />
               <button
                 onClick={handleReset}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="mt-6 bg-darkblue-600 hover:bg-darkblue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
               >
                 Try Again
               </button>
@@ -81,9 +96,9 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="bg-white mt-12 py-6 border-t">
+      <footer className="bg-dark-card mt-12 py-6 border-t border-dark-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 text-sm">
+          <p className="text-center text-dark-muted text-sm">
             AI Healthcare Shift Scheduler &copy; {new Date().getFullYear()}
           </p>
         </div>

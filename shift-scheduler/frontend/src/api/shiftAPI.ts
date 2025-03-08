@@ -33,6 +33,7 @@ export const postShift = async (text: string, timezone: string) => {
       }
     );
 
+    // The response will now contain both shift and evaluation data
     return response.data;
   } catch (error) {
     console.error("Error posting shift:", error);
