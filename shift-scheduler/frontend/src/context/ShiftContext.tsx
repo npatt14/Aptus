@@ -49,10 +49,8 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-  // Memoize the refreshShifts function to prevent unnecessary re-renders
+  // Refresh shifts from the backend
   const refreshShifts = useCallback(async () => {
-    if (loading) return; // Prevent multiple simultaneous requests
-
     setLoading(true);
     setError(null);
 
@@ -67,11 +65,10 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, []);
 
+  // Submit a new shift
   const submitShift = async (text: string) => {
-    if (loading) return; // Prevent multiple simultaneous submissions
-
     setLoading(true);
     setError(null);
     setSubmissionSuccess(false);
@@ -79,6 +76,7 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
     try {
       await createShift(text);
       setSubmissionSuccess(true);
+
       // Refresh shifts to include the new one
       const data = await getAllShifts();
       setShifts(data);
@@ -90,6 +88,7 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  // Clear submission status
   const clearSubmissionStatus = useCallback(() => {
     setSubmissionSuccess(false);
     setError(null);

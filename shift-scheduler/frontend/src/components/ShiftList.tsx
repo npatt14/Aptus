@@ -3,22 +3,27 @@ import { format, parseISO } from "date-fns";
 import { useShifts } from "../context/ShiftContext";
 
 const ShiftList: React.FC = () => {
-  const { shifts, error, refreshShifts } = useShifts();
-  const [isLoading, setIsLoading] = useState(true);
+  const { shifts, loading, error, refreshShifts } = useShifts();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Load shifts when the component mounts
   useEffect(() => {
-    const loadShifts = async () => {
-      setIsLoading(true);
-      try {
-        await refreshShifts();
-      } finally {
-        // Set loading to false regardless of success or failure
-        setIsLoading(false);
-      }
-    };
-
-    loadShifts();
+    refreshShifts();
   }, [refreshShifts]);
+
+  // Handle manual refresh
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+
+    setIsRefreshing(true);
+    try {
+      await refreshShifts();
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 500); // Add a small delay to prevent UI jank
+    }
+  };
 
   const formatDate = (dateString: string) => {
     try {
@@ -29,7 +34,7 @@ const ShiftList: React.FC = () => {
     }
   };
 
-  if (isLoading && shifts.length === 0) {
+  if (loading && shifts.length === 0) {
     return (
       <div className="w-full max-w-4xl mx-auto bg-dark-card p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold text-dark-accent mb-4">
@@ -53,9 +58,10 @@ const ShiftList: React.FC = () => {
         </div>
         <button
           className="mt-2 px-4 py-2 bg-dark-accent text-white rounded-md mx-auto block"
-          onClick={() => refreshShifts()}
+          onClick={handleRefresh}
+          disabled={isRefreshing}
         >
-          Try Again
+          {isRefreshing ? "Trying..." : "Try Again"}
         </button>
       </div>
     );
@@ -69,13 +75,10 @@ const ShiftList: React.FC = () => {
         </h2>
         <button
           className="px-3 py-1 text-sm bg-dark-accent text-white rounded-md flex items-center"
-          onClick={() => {
-            setIsLoading(true);
-            refreshShifts().finally(() => setIsLoading(false));
-          }}
-          disabled={isLoading}
+          onClick={handleRefresh}
+          disabled={isRefreshing}
         >
-          {isLoading ? "Refreshing..." : "Refresh"}
+          {isRefreshing ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 

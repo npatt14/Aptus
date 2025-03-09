@@ -36,6 +36,9 @@ module.exports = {
           border: "#334155",
           text: "#f1f5f9",
           muted: "#94a3b8",
+          input: "#1e293b",
+          accent: "#3b82f6",
+          "accent-hover": "#2563eb",
         },
       },
       fontFamily: {
