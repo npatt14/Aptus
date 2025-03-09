@@ -50,6 +50,12 @@ Extract the following information:
 3. End time (in ISO8601 format with timezone)
 4. Hourly rate (as provided, e.g., "$25/hr", "25 dollars per hour")
 
+VALIDATION REQUIREMENTS:
+- Position must be a recognized healthcare role (pharmacist, technician, nurse, doctor, physician, surgeon, etc.)
+- Dates must be in valid ISO8601 format with timezone
+- End time must be after start time
+- All fields must be present
+
 If the user mentions relative dates like "tomorrow", "next Friday", or "this weekend", interpret them relative to today's date (${currentDate}).
 If no specific year is mentioned, assume the current year.
 If no specific hour is given for start/end times, assume 9:00 AM for start time and 5:00 PM for end time.
@@ -60,6 +66,11 @@ Your response must be in this format:
   "start_time": string (ISO8601 with timezone),
   "end_time": string (ISO8601 with timezone),
   "rate": string
+}
+
+If you cannot extract all required information, respond with:
+{
+  "error": "Missing information: [specify what's missing]"
 }
 `;
 
