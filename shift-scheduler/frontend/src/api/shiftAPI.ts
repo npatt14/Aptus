@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Get the API URL from environment or use default
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
 // Create an axios instance with defaults
 const api = axios.create({
@@ -71,7 +71,7 @@ export const createShift = async (text: string): Promise<ApiResponse> => {
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const response = await axios.post(
-      `${API_URL}/shifts`,
+      `${API_URL}/api/shifts`,
       { text },
       {
         headers: {
@@ -101,7 +101,7 @@ export const createShift = async (text: string): Promise<ApiResponse> => {
 export const getAllShifts = async (): Promise<Shift[]> => {
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const response = await axios.get(`${API_URL}/shifts`, {
+    const response = await axios.get(`${API_URL}/api/shifts`, {
       headers: {
         "X-Timezone": timezone,
       },

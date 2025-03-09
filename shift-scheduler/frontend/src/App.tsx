@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ShiftInput from "./components/ShiftInput";
 import ShiftList from "./components/ShiftList";
 import ShiftConfirmation from "./components/ShiftConfirmation";
@@ -6,13 +6,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import { useShifts } from "./context/ShiftContext";
 
 const App: React.FC = () => {
-  const { error, submissionSuccess, refreshShifts, clearSubmissionStatus } =
-    useShifts();
-
-  // Fetch shifts when component mounts
-  useEffect(() => {
-    refreshShifts();
-  }, [refreshShifts]);
+  const { error, submissionSuccess, clearSubmissionStatus } = useShifts();
 
   return (
     <div className="min-h-screen bg-dark-bg text-dark-text">
@@ -36,7 +30,7 @@ const App: React.FC = () => {
             <ShiftConfirmation onDismiss={clearSubmissionStatus} />
           )}
 
-          {error && <ErrorMessage message={error} />}
+          {error && !submissionSuccess && <ErrorMessage message={error} />}
 
           <ShiftList />
         </div>

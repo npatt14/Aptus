@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useCallback,
+} from "react";
 import { createShift, getAllShifts } from "../api/shiftAPI";
 
 // Define types
@@ -43,21 +49,29 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-  const refreshShifts = async () => {
+  // Memoize the refreshShifts function to prevent unnecessary re-renders
+  const refreshShifts = useCallback(async () => {
+    if (loading) return; // Prevent multiple simultaneous requests
+
     setLoading(true);
     setError(null);
+
     try {
       const data = await getAllShifts();
       setShifts(data);
-    } catch (err) {
-      setError("Failed to fetch shifts. Please try again later.");
+    } catch (err: any) {
       console.error("Error fetching shifts:", err);
+      setError(
+        err.message || "Failed to fetch shifts. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading]);
 
   const submitShift = async (text: string) => {
+    if (loading) return; // Prevent multiple simultaneous submissions
+
     setLoading(true);
     setError(null);
     setSubmissionSuccess(false);
@@ -66,19 +80,20 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
       await createShift(text);
       setSubmissionSuccess(true);
       // Refresh shifts to include the new one
-      await refreshShifts();
+      const data = await getAllShifts();
+      setShifts(data);
     } catch (err: any) {
-      setError(err.message || "Failed to create shift. Please try again.");
       console.error("Error submitting shift:", err);
+      setError(err.message || "Failed to create shift. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const clearSubmissionStatus = () => {
+  const clearSubmissionStatus = useCallback(() => {
     setSubmissionSuccess(false);
     setError(null);
-  };
+  }, []);
 
   return (
     <ShiftContext.Provider

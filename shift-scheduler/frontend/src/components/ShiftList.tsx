@@ -1,12 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { useShifts } from "../context/ShiftContext";
 
 const ShiftList: React.FC = () => {
-  const { shifts, loading, error, refreshShifts } = useShifts();
+  const { shifts, error, refreshShifts } = useShifts();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    refreshShifts();
+    const loadShifts = async () => {
+      setIsLoading(true);
+      try {
+        await refreshShifts();
+      } finally {
+        // Set loading to false regardless of success or failure
+        setIsLoading(false);
+      }
+    };
+
+    loadShifts();
   }, [refreshShifts]);
 
   const formatDate = (dateString: string) => {
@@ -18,7 +29,7 @@ const ShiftList: React.FC = () => {
     }
   };
 
-  if (loading && shifts.length === 0) {
+  if (isLoading && shifts.length === 0) {
     return (
       <div className="w-full max-w-4xl mx-auto bg-dark-card p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold text-dark-accent mb-4">
@@ -38,17 +49,35 @@ const ShiftList: React.FC = () => {
           Scheduled Shifts
         </h2>
         <div className="text-red-400 text-center py-8">
-          Error loading shifts. Please try again later.
+          Error loading shifts: {error}
         </div>
+        <button
+          className="mt-2 px-4 py-2 bg-dark-accent text-white rounded-md mx-auto block"
+          onClick={() => refreshShifts()}
+        >
+          Try Again
+        </button>
       </div>
     );
   }
 
   return (
     <div className="w-full max-w-4xl mx-auto bg-dark-card p-6 rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-dark-accent mb-4">
-        Scheduled Shifts
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-dark-accent">
+          Scheduled Shifts
+        </h2>
+        <button
+          className="px-3 py-1 text-sm bg-dark-accent text-white rounded-md flex items-center"
+          onClick={() => {
+            setIsLoading(true);
+            refreshShifts().finally(() => setIsLoading(false));
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? "Refreshing..." : "Refresh"}
+        </button>
+      </div>
 
       {shifts.length === 0 ? (
         <div className="text-dark-muted text-center py-8">

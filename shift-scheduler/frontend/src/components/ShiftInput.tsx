@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useShifts } from "../context/ShiftContext";
 
 const ShiftInput: React.FC = () => {
   const [input, setInput] = useState("");
-  const { submitShift, loading } = useShifts();
+  const { submitShift, loading, error } = useShifts();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Reset isSubmitting when loading state changes to false
+  useEffect(() => {
+    if (!loading && isSubmitting) {
+      setIsSubmitting(false);
+    }
+  }, [loading, isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
 
+    setIsSubmitting(true);
     await submitShift(input);
     setInput("");
   };
@@ -29,20 +38,24 @@ const ShiftInput: React.FC = () => {
           <textarea
             id="shift-text"
             rows={3}
-            className="w-full px-3 py-2 bg-dark-input text-dark-text border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent"
+            className="w-full px-3 py-2 bg-dark-bg text-dark-text border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent"
             placeholder="Example: Need a nurse tomorrow from 9am to 5pm at $25/hr"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            disabled={loading}
+            disabled={isSubmitting}
           ></textarea>
         </div>
         <button
           type="submit"
           className="w-full bg-dark-accent hover:bg-dark-accent-hover text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading || !input.trim()}
+          disabled={isSubmitting || !input.trim()}
         >
-          {loading ? "Processing..." : "Schedule Shift"}
+          {isSubmitting ? "Processing..." : "Schedule Shift"}
         </button>
+
+        {error && !isSubmitting && (
+          <p className="mt-2 text-red-400 text-sm">{error}</p>
+        )}
       </form>
     </div>
   );
