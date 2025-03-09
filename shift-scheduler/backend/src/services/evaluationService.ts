@@ -2,7 +2,7 @@ import { OpenAIResponse } from "../types/shiftTypes";
 import { isValidISODateString } from "./dateUtils";
 
 /**
- * Streamlined evaluation service that validates the quality of LLM responses
+ * validates the quality of LLM responses
  */
 
 // Validates the LLM response has all required fields and correct data types

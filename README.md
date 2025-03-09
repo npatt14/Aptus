@@ -3,12 +3,6 @@
 ## Setup
 
 1. Clone this repo
-
-   ```
-   git clone <repo-url>
-   cd shift-scheduler
-   ```
-
 2. Set up the backend
 
    ```
@@ -41,11 +35,11 @@ cd frontend
 npm start
 ```
 
-The app should open in your browser at http://localhost:3000.
+The app should open at http://localhost:3000
 
 ## How to use
 
-Just type natural language like "Need a parmacist next Monday from 9am to 5pm" in the form and hit submit.
+Just type natural language like "Need a parmacist next Monday from 9am to 5pm" in the form and hit submit. Feel free to have fun with testing edge cases!
 
 ## Running tests
 
