@@ -11,7 +11,20 @@
    cp .env.example .env  # Don't forget to add your API keys
    ```
 
-3. Set up the frontend
+3. Set up Supabase
+
+   - Create a Supabase account at [supabase.com](https://supabase.com)
+   - Create a new project
+   - Get your Supabase URL and anon key from Project Settings > API
+   - Add these to your `.env` file as `SUPABASE_URL` and `SUPABASE_KEY`
+   - Initialize your database schema by running the SQL script:
+     ```
+     # Navigate to your Supabase project's SQL Editor
+     # Copy and paste the contents of scripts/setupSupabase.sql
+     # Run the script to create the required tables and triggers
+     ```
+
+4. Set up the frontend
    ```
    cd ../frontend
    npm install

@@ -5,7 +5,6 @@ import { isValidISODateString } from "./dateUtils";
  * validates the quality of LLM responses
  */
 
-// Validates the LLM response has all required fields and correct data types
 export const evaluateLLMResponse = (
   response: OpenAIResponse
 ): {
@@ -25,7 +24,7 @@ export const evaluateLLMResponse = (
       response.rate
   );
 
-  // Validate date formats if present
+  // Validate date formats 
   const dateFormats = Boolean(
     requiredFields &&
       isValidISODateString(response.start_time) &&
