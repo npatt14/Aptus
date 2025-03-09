@@ -1,69 +1,48 @@
 import React, { useState } from "react";
-import { postShift } from "../api/shiftAPI";
+import { useShifts } from "../context/ShiftContext";
 
-interface ShiftInputProps {
-  onShiftSubmitted: (data: any) => void;
-  onError: (error: any) => void;
-}
-
-const ShiftInput: React.FC<ShiftInputProps> = ({
-  onShiftSubmitted,
-  onError,
-}) => {
+const ShiftInput: React.FC = () => {
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { submitShift, loading } = useShifts();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!input.trim()) return;
 
-    setIsLoading(true);
-
-    try {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const result = await postShift(input, timezone);
-
-      onShiftSubmitted(result);
-      setInput("");
-    } catch (error) {
-      onError(error);
-    } finally {
-      setIsLoading(false);
-    }
+    await submitShift(input);
+    setInput("");
   };
 
   return (
-    <div className="w-full max-w-lg bg-dark-card p-6 rounded-lg shadow-lg border border-dark-border">
-      <h2 className="text-2xl font-bold text-darkblue-300 mb-6">
-        Enter Shift Details
+    <div className="w-full max-w-lg bg-dark-card p-6 rounded-lg shadow-lg mx-auto">
+      <h2 className="text-xl font-semibold text-dark-accent mb-4">
+        Create a New Shift
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
           <label
-            htmlFor="shift-input"
-            className="block text-dark-text font-medium mb-2"
+            htmlFor="shift-text"
+            className="block text-dark-muted text-sm font-medium mb-2"
           >
-            Describe your shift in natural language
+            Describe the shift you need to fill
           </label>
           <textarea
-            id="shift-input"
-            className="w-full px-4 py-3 bg-dark-bg border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:border-transparent min-h-[120px] text-dark-text placeholder-dark-muted transition-colors"
-            placeholder="Example: Need a nurse for tomorrow from 9am to 5pm at $25/hour"
+            id="shift-text"
+            rows={3}
+            className="w-full px-3 py-2 bg-dark-input text-dark-text border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent"
+            placeholder="Example: Need a nurse tomorrow from 9am to 5pm at $25/hr"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            disabled={isLoading}
-          />
+            disabled={loading}
+          ></textarea>
         </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-darkblue-600 hover:bg-darkblue-700 text-white font-medium py-2 px-6 rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:ring-offset-2 focus:ring-offset-dark-card disabled:opacity-50 transition-colors duration-200"
-            disabled={!input.trim() || isLoading}
-          >
-            {isLoading ? "Processing..." : "Schedule Shift"}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="w-full bg-dark-accent hover:bg-dark-accent-hover text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading || !input.trim()}
+        >
+          {loading ? "Processing..." : "Schedule Shift"}
+        </button>
       </form>
     </div>
   );

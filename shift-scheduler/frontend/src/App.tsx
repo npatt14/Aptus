@@ -1,107 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import ShiftInput from "./components/ShiftInput";
+import ShiftList from "./components/ShiftList";
 import ShiftConfirmation from "./components/ShiftConfirmation";
 import ErrorMessage from "./components/ErrorMessage";
-import ShiftList from "./components/ShiftList";
-
-interface Shift {
-  id: string;
-  position: string;
-  start_time: string;
-  end_time: string;
-  rate: string;
-  raw_input: string;
-  status: string;
-  created_at: string;
-}
-
-interface ApiResponse {
-  shift: Shift;
-  evaluation?: {
-    valid: boolean;
-    results: {
-      requiredFields: boolean;
-      dateFormats: boolean;
-      timeSequence: boolean;
-      position: boolean;
-    };
-  };
-}
+import { useShifts } from "./context/ShiftContext";
 
 const App: React.FC = () => {
-  const [submittedShift, setSubmittedShift] = useState<ApiResponse | null>(
-    null
-  );
-  const [error, setError] = useState<boolean>(false);
-  const [shiftAdded, setShiftAdded] = useState<number>(0);
+  const { error, submissionSuccess, refreshShifts, clearSubmissionStatus } =
+    useShifts();
 
-  const handleShiftSubmitted = (response: ApiResponse) => {
-    setSubmittedShift(response);
-    setError(false);
-    setShiftAdded((prev) => prev + 1);
-  };
-
-  const handleError = () => {
-    setError(true);
-    setSubmittedShift(null);
-  };
-
-  const handleReset = () => {
-    setSubmittedShift(null);
-    setError(false);
-  };
+  // Fetch shifts when component mounts
+  useEffect(() => {
+    refreshShifts();
+  }, [refreshShifts]);
 
   return (
     <div className="min-h-screen bg-dark-bg text-dark-text">
-      <header className="bg-dark-card border-b border-dark-border shadow-md">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-darkblue-300">
-            Shift Scheduler
+      <header className="pt-8 pb-6 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold text-dark-accent mb-2">
+            AI Healthcare Shift Scheduler
           </h1>
+          <p className="text-dark-muted">
+            Enter shift details in natural language and our AI will schedule it
+            for you.
+          </p>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center space-y-8">
-          {!submittedShift && !error && (
-            <ShiftInput
-              onShiftSubmitted={handleShiftSubmitted}
-              onError={handleError}
-            />
+      <main className="px-4 pb-12">
+        <div className="max-w-4xl mx-auto space-y-8">
+          <ShiftInput />
+
+          {submissionSuccess && (
+            <ShiftConfirmation onDismiss={clearSubmissionStatus} />
           )}
 
-          {submittedShift && (
-            <>
-              <ShiftConfirmation shift={submittedShift.shift} />
-              <button
-                onClick={handleReset}
-                className="mt-6 bg-darkblue-600 hover:bg-darkblue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
-              >
-                Schedule Another Shift
-              </button>
-            </>
-          )}
+          {error && <ErrorMessage message={error} />}
 
-          {error && (
-            <>
-              <ErrorMessage />
-              <button
-                onClick={handleReset}
-                className="mt-6 bg-darkblue-600 hover:bg-darkblue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-darkblue-500 focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
-              >
-                Try Again
-              </button>
-            </>
-          )}
-
-          <ShiftList refreshTrigger={shiftAdded} />
+          <ShiftList />
         </div>
       </main>
 
-      <footer className="bg-dark-card mt-12 py-6 border-t border-dark-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-dark-muted text-sm">
-            Shift Scheduler &copy; {new Date().getFullYear()}
+      <footer className="py-6 bg-dark-card text-dark-muted text-center text-sm">
+        <div className="max-w-4xl mx-auto px-4">
+          <p>
+            AI Healthcare Shift Scheduler • Powered by OpenAI and Supabase •{" "}
+            {new Date().getFullYear()}
           </p>
         </div>
       </footer>

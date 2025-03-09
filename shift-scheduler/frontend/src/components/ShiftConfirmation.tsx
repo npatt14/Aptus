@@ -1,16 +1,16 @@
 import React from "react";
 
 interface ShiftConfirmationProps {
-  shift: any; // Accept any shape of data
+  onDismiss: () => void;
 }
 
-const ShiftConfirmation: React.FC<ShiftConfirmationProps> = () => {
+const ShiftConfirmation: React.FC<ShiftConfirmationProps> = ({ onDismiss }) => {
   return (
-    <div className="w-full max-w-lg bg-dark-card p-8 rounded-lg shadow-lg border border-darkblue-700">
-      <div className="flex items-center justify-center mb-6">
-        <div className="bg-darkblue-900/30 rounded-full p-3">
+    <div className="w-full max-w-lg bg-dark-card p-6 rounded-lg shadow-lg mx-auto">
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="bg-green-900/20 rounded-full p-2">
           <svg
-            className="w-10 h-10 text-darkblue-400"
+            className="w-8 h-8 text-green-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -24,15 +24,19 @@ const ShiftConfirmation: React.FC<ShiftConfirmationProps> = () => {
             />
           </svg>
         </div>
+        <h2 className="text-2xl font-bold text-green-400">Success!</h2>
       </div>
 
-      <h2 className="text-2xl font-bold text-center text-darkblue-300 mb-4">
-        Shift Scheduled Successfully!
-      </h2>
-
-      <p className="text-center text-dark-muted">
-        Your shift has been successfully scheduled and added to the database.
+      <p className="text-dark-text mb-5 pl-14">
+        Your shift has been scheduled successfully.
       </p>
+
+      <button
+        onClick={onDismiss}
+        className="mt-4 w-full bg-dark-accent hover:bg-dark-accent-hover text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
+      >
+        Schedule Another Shift
+      </button>
     </div>
   );
 };
