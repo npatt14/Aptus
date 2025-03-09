@@ -1,0 +1,20 @@
+TEST GET /api/shifts
+curl -X GET "http://localhost:3001/api/shifts" -H "Content-Type: 
+application/json" -H "X-Timezone: America/New_York" | json_pp
+
+
+TEST GET /api/shifts/evaluation-metrics
+curl -X GET "http://localhost:3001/api/shifts/evaluation-metrics"
+-H "Content-Type: application/json" -H "X-Timezone: America/New_York" | json_pp
+
+
+TEST POST /api/shifts
+curl -X POST "http://localhost:3001/api/shifts" -H "Content-Type:
+application/json" -H "X-Timezone: America/New_York" -d '{"text":
+"Need a pediatrician on Friday from 2pm to 8pm at $120/hr"}' | json_pp
+
+
+TEST POST /api/shifts with invalid input
+curl -X POST "http://localhost:3001/api/shifts" -H "Content-Type:
+application/json" -H "X-Timezone: America/New_York" -d 
+'{"text": "Need someone"}' | json_pp

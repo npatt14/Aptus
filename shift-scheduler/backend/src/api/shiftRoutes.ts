@@ -8,7 +8,7 @@ import { evaluateLLMResponse } from "../services/evaluationService";
 
 const router = express.Router();
 
-// Check if we're in a non-production environment
+// Check if were in a non prod environment
 const isTestEnvironment = process.env.NODE_ENV === "test";
 const isDevelopmentEnvironment =
   process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
@@ -26,7 +26,7 @@ router.post("/", async (req: Request, res: Response) => {
   const timezone = req.app.locals.timezone as string;
 
   console.log(
-    `Received POST request with text: "${text}" and timezone: ${timezone}`
+    `Received POST request with text: "${text}" and tmezone: ${timezone}`
   );
 
   if (!text) {
@@ -37,7 +37,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 
   try {
-    // Parse the shift description using OpenAI
+    // Parse the shift description using openai
     console.log("Calling parseShiftDescription...");
     const parsedShift = await parseShiftDescription(text, timezone);
 
@@ -54,7 +54,7 @@ router.post("/", async (req: Request, res: Response) => {
     };
 
     // Insert the shift into the database
-    console.log("Inserting shift into database...");
+    console.log("Inserting shift into db");
     const savedShift = await insertShift(shift);
     console.log("Shift saved successfully:", savedShift);
 
