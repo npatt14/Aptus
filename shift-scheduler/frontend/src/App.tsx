@@ -6,7 +6,21 @@ import ErrorMessage from "./components/ErrorMessage";
 import { useShifts } from "./context/ShiftContext";
 
 const App: React.FC = () => {
-  const { error, submissionSuccess, clearSubmissionStatus } = useShifts();
+  const { error, submissionSuccess, clearSubmissionStatus, loading } =
+    useShifts();
+
+  // Determine which component to render in the form section
+  const renderFormSection = () => {
+    if (submissionSuccess) {
+      return <ShiftConfirmation onDismiss={clearSubmissionStatus} />;
+    }
+
+    if (error && !loading) {
+      return <ErrorMessage message={error} onDismiss={clearSubmissionStatus} />;
+    }
+
+    return <ShiftInput />;
+  };
 
   return (
     <div className="min-h-screen bg-dark-bg text-dark-text">
@@ -24,14 +38,10 @@ const App: React.FC = () => {
 
       <main className="px-4 pb-12">
         <div className="max-w-4xl mx-auto space-y-8">
-          <ShiftInput />
+          {/* Form section - conditionally renders input or confirmation/error */}
+          {renderFormSection()}
 
-          {submissionSuccess && (
-            <ShiftConfirmation onDismiss={clearSubmissionStatus} />
-          )}
-
-          {error && !submissionSuccess && <ErrorMessage message={error} />}
-
+          {/* Shift list always shows */}
           <ShiftList />
         </div>
       </main>

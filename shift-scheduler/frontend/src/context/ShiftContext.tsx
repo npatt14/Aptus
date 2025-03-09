@@ -67,19 +67,28 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
 
-  // Submit a new shift
+  // Submit a new shift with optimized performance
   const submitShift = async (text: string) => {
+    // Validate input
+    if (!text.trim()) {
+      setError("Please enter a shift description.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSubmissionSuccess(false);
 
     try {
-      await createShift(text);
-      setSubmissionSuccess(true);
+      // Create shift - only one API call needed as the response includes the shift data
+      const response = await createShift(text);
 
-      // Refresh shifts to include the new one
-      const data = await getAllShifts();
-      setShifts(data);
+      // Update shifts by adding the new shift to the existing array
+      // This avoids a separate API call to refresh the entire list
+      setShifts((currentShifts) => [response.shift, ...currentShifts]);
+
+      // Set success state
+      setSubmissionSuccess(true);
     } catch (err: any) {
       console.error("Error submitting shift:", err);
       setError(err.message || "Failed to create shift. Please try again.");
