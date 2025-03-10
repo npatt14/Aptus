@@ -39,7 +39,7 @@ const ShiftList: React.FC = () => {
     }
   };
 
-  // Show loading indicator when initially loading (no shifts yet)
+  // show loading indicator when initially loading
   if (loading && shifts.length === 0) {
     return (
       <div className="w-full max-w-4xl mx-auto bg-dark-card p-6 rounded-lg shadow-lg">

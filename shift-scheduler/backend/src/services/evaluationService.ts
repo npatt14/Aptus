@@ -1,10 +1,8 @@
 import { OpenAIResponse } from "../types/shiftTypes";
 import { isValidISODateString } from "./dateUtils";
 
-/**
- * validates the quality of LLM responses
- */
-
+ // Evaluates and validates the OpenAI model's response for shift information
+ 
 export const evaluateLLMResponse = (
   response: OpenAIResponse
 ): {
@@ -24,7 +22,7 @@ export const evaluateLLMResponse = (
       response.rate
   );
 
-  // Validate date formats 
+  // Validate date formats
   const dateFormats = Boolean(
     requiredFields &&
       isValidISODateString(response.start_time) &&

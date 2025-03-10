@@ -3,7 +3,6 @@ import { OpenAIResponse } from "../types/shiftTypes";
 import { getCurrentDateForPrompt } from "./dateUtils";
 import { evaluateLLMResponse } from "./evaluationService";
 
-// Environment detection
 const isTestEnvironment = process.env.NODE_ENV === "test";
 const isDevelopmentEnvironment =
   process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
@@ -26,9 +25,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-/**
- * Parse natural language shift description using OpenAI
- */
+
+ // Parses a natural language shift description into structured data
 export const parseShiftDescription = async (
   text: string,
   timezone: string
@@ -40,6 +38,7 @@ export const parseShiftDescription = async (
   );
   console.log(`Current date for context: ${currentDate}`);
 
+  // Construct a detailed system prompt with instructions and validation requirements
   const systemPrompt = `
 You are a healthcare shift scheduling assistant. Your task is to parse natural language descriptions of shifts into structured data.
 Today's date is ${currentDate} in the user's timezone (${timezone}).
@@ -76,13 +75,14 @@ If you cannot extract all required information, respond with:
 
   console.log("Calling OpenAI API with model: gpt-4");
 
+  // Performance optimization: Use specific temperature setting to reduce hallucinations
   const response = await openai.chat.completions.create({
     model: "gpt-4",
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: text },
     ],
-    temperature: 0.2,
+    temperature: 0.2, // Lower temperature for more deterministic outputs
     // Note: Removed response_format which is not supported with gpt-4
   });
 
@@ -98,6 +98,7 @@ If you cannot extract all required information, respond with:
   console.log(`OpenAI response content: ${content}`);
 
   try {
+    // Parse the JSON response into our expected structure
     const parsedResponse = JSON.parse(content) as OpenAIResponse;
 
     // Use the evaluation service to validate the LLM response
@@ -109,6 +110,7 @@ If you cannot extract all required information, respond with:
     }
 
     console.log("Successfully parsed and validated shift:", parsedResponse);
+
     return parsedResponse;
   } catch (error) {
     console.error("Error processing OpenAI response:", error);

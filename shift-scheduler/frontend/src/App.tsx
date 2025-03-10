@@ -27,11 +27,10 @@ const App: React.FC = () => {
       <header className="pt-8 pb-6 px-4">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-dark-accent mb-2">
-            AI Healthcare Shift Scheduler
+            Healthcare Hiring
           </h1>
           <p className="text-dark-muted">
-            Enter shift details in natural language and our AI will schedule it
-            for you.
+            Enter shift details in natural language and we will schedule it for you.
           </p>
         </div>
       </header>
@@ -49,8 +48,7 @@ const App: React.FC = () => {
       <footer className="py-6 bg-dark-card text-dark-muted text-center text-sm">
         <div className="max-w-4xl mx-auto px-4">
           <p>
-            AI Healthcare Shift Scheduler • Powered by OpenAI and Supabase •{" "}
-            {new Date().getFullYear()}
+            • Powered by OpenAI and Supabase :D{" "}
           </p>
         </div>
       </footer>

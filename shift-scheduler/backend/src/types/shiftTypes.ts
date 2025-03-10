@@ -1,8 +1,8 @@
 export interface Shift {
   id?: string;
   position: string;
-  start_time: string; // ISO8601
-  end_time: string; // ISO8601
+  start_time: string; // ISO
+  end_time: string; // ISO
   rate: string;
   raw_input: string;
   status: "success" | "error";

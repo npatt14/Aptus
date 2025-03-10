@@ -36,7 +36,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 
       <div className="border-t border-dark-border pt-4 mt-4">
         <p className="text-sm text-dark-muted">
-          Try to include specific information like position, dates, times, and
+          Include specific information like position, dates, times, and
           rate.
         </p>
         <p className="text-sm text-dark-muted mt-2 mb-4">
@@ -47,7 +47,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
           onClick={onDismiss}
           className="w-full bg-dark-accent hover:bg-dark-accent-hover text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-dark-accent focus:ring-offset-2 focus:ring-offset-dark-bg transition-colors duration-200"
         >
-          Try Again
+          Try Againn
         </button>
       </div>
     </div>

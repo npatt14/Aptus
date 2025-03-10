@@ -1,63 +1,56 @@
 import { describe, expect, jest, test } from "@jest/globals";
-import { parseShiftDescription } from "../../services/openAI";
-import { OpenAIResponse } from "../../types/shiftTypes";
+import { mockOpenAIResponse, createEvaluationResponse } from "../testUtils";
 
-// Mock the OpenAI module
+// Set up mockks for everythng except the module being tested
+jest.mock("../../services/dateUtils", () => ({
+  getCurrentDateForPrompt: jest
+    .fn()
+    .mockImplementation(() => "Friday, March 14th, 2025"),
+  isValidISODateString: jest.fn().mockImplementation(() => true),
+}));
+
+jest.mock("../../services/evaluationService", () => ({
+  evaluateLLMResponse: jest
+    .fn()
+    .mockImplementation(() => createEvaluationResponse()),
+}));
+
+// Create a mock OpenAI class
+const createMock = jest.fn().mockImplementation(async () => ({
+  choices: [
+    {
+      message: {
+        content: JSON.stringify(mockOpenAIResponse),
+      },
+    },
+  ],
+}));
+
+// Create a mock constructor function
+const OpenAIMock = jest.fn().mockImplementation(() => ({
+  chat: {
+    completions: {
+      create: createMock,
+    },
+  },
+}));
+
+// Mock the openaii module
 jest.mock("openai", () => {
   return {
-    OpenAI: jest.fn().mockImplementation(() => {
-      return {
-        chat: {
-          completions: {
-            create: jest.fn().mockImplementation(async () => {
-              return {
-                choices: [
-                  {
-                    message: {
-                      content: JSON.stringify({
-                        position: "nurse",
-                        start_time: "2025-03-15T09:00:00-04:00",
-                        end_time: "2025-03-15T17:00:00-04:00",
-                        rate: "$25/hr",
-                      }),
-                    },
-                  },
-                ],
-              };
-            }),
-          },
-        },
-      };
-    }),
+    __esModule: true,
+    default: OpenAIMock,
   };
 });
 
-// Mock the date utils to provide consistent results
-jest.mock("../../services/dateUtils", () => {
-  return {
-    getCurrentDateForPrompt: jest
-      .fn()
-      .mockReturnValue("Friday, March 14th, 2025"),
-    isValidISODateString: jest.fn().mockReturnValue(true),
-  };
-});
-
-// Mock the evaluation service for predictable results
-jest.mock("../../services/evaluationService", () => {
-  return {
-    evaluateLLMResponse: jest.fn().mockReturnValue({
-      valid: true,
-      results: {
-        requiredFields: true,
-        dateFormats: true,
-        timeSequence: true,
-        position: true,
-      },
-    }),
-  };
-});
+// Import the function under test after all mocks are set up
+import { parseShiftDescription } from "../../services/openAI";
 
 describe("OpenAI Service", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("parseShiftDescription", () => {
     test("successfully parses a valid shift description", async () => {
       // Set up test data
@@ -69,20 +62,20 @@ describe("OpenAI Service", () => {
 
       // Verify results
       expect(result).toBeDefined();
-      expect(result.position).toBe("nurse");
-      expect(result.start_time).toBe("2025-03-15T09:00:00-04:00");
-      expect(result.end_time).toBe("2025-03-15T17:00:00-04:00");
-      expect(result.rate).toBe("$25/hr");
+      expect(result.position).toBe(mockOpenAIResponse.position);
+      expect(result.start_time).toBe(mockOpenAIResponse.start_time);
+      expect(result.end_time).toBe(mockOpenAIResponse.end_time);
+      expect(result.rate).toBe(mockOpenAIResponse.rate);
+
+      // Verify the mock was called correctly
+      expect(createMock).toHaveBeenCalled();
     });
 
-    // This test would require additional mocking setup
     test("handles API errors gracefully", async () => {
-      // Set up a mock implementation that throws an error
-      jest
-        .spyOn(OpenAI.prototype.chat.completions, "create")
-        .mockImplementationOnce(() => {
-          throw new Error("API error");
-        });
+      // Set up the mock to reject
+      createMock.mockImplementationOnce(() =>
+        Promise.reject(new Error("API error"))
+      );
 
       // Set up test data
       const text = "incomplete description";

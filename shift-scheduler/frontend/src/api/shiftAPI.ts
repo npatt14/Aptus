@@ -12,9 +12,9 @@ const api = axios.create({
 });
 
 // Helper to get user's timezone
-const getUserTimezone = () => {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
-};
+// const getUserTimezone = () => {
+//   return Intl.DateTimeFormat().resolvedOptions().timeZone;
+// };
 
 export interface Shift {
   id: string;

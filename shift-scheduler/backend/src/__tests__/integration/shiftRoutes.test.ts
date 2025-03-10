@@ -1,67 +1,34 @@
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
+import { Shift } from "../../types/shiftTypes";
+import {
+  mockShift,
+  mockOpenAIResponse,
+  createTestApp,
+  createEvaluationResponse,
+} from "../testUtils";
 import request from "supertest";
-import express from "express";
-import shiftRoutes from "../../api/shiftRoutes";
 
-// Mock the services used by the routes
+// Mock the required modules
 jest.mock("../../services/openAI", () => ({
-  parseShiftDescription: jest.fn().mockResolvedValue({
-    position: "doctor",
-    start_time: "2025-03-15T08:00:00-04:00",
-    end_time: "2025-03-15T16:00:00-04:00",
-    rate: "$80/hr",
-  }),
+  parseShiftDescription: jest.fn().mockImplementation(() => mockOpenAIResponse),
 }));
 
 jest.mock("../../services/supabase", () => ({
-  insertShift: jest.fn().mockResolvedValue({
-    id: "123e4567-e89b-12d3-a456-426614174000",
-    position: "doctor",
-    start_time: "2025-03-15T08:00:00-04:00",
-    end_time: "2025-03-15T16:00:00-04:00",
-    rate: "$80/hr",
-    raw_input: "Need a doctor tomorrow from 8am to 4pm at $80/hr",
-    status: "success",
-    created_at: "2025-03-14T12:00:00-04:00",
-    updated_at: "2025-03-14T12:00:00-04:00",
-  }),
-  getAllShifts: jest.fn().mockResolvedValue([
-    {
-      id: "123e4567-e89b-12d3-a456-426614174000",
-      position: "doctor",
-      start_time: "2025-03-15T08:00:00-04:00",
-      end_time: "2025-03-15T16:00:00-04:00",
-      rate: "$80/hr",
-      raw_input: "Need a doctor tomorrow from 8am to 4pm at $80/hr",
-      status: "success",
-      created_at: "2025-03-14T12:00:00-04:00",
-      updated_at: "2025-03-14T12:00:00-04:00",
-    },
-  ]),
+  insertShift: jest.fn().mockImplementation(() => mockShift),
+  getAllShifts: jest.fn().mockImplementation(() => [mockShift]),
 }));
 
 jest.mock("../../services/evaluationService", () => ({
-  evaluateLLMResponse: jest.fn().mockReturnValue({
-    valid: true,
-    results: {
-      requiredFields: true,
-      dateFormats: true,
-      timeSequence: true,
-      position: true,
-    },
-  }),
+  evaluateLLMResponse: jest
+    .fn()
+    .mockImplementation(() => createEvaluationResponse()),
 }));
 
-// Create a test Express app
-const app = express();
-app.use(express.json());
-app.use("/api/shifts", shiftRoutes);
+// Import dependencies after mocks are set up
+import shiftRoutes from "../../api/shiftRoutes";
 
-// Mock the req.app.locals for timezone middleware
-app.use((req, res, next) => {
-  req.app.locals = { timezone: "America/New_York" };
-  next();
-});
+// Create a test Express app
+const app = createTestApp(shiftRoutes);
 
 describe("Shift Routes", () => {
   beforeEach(() => {
@@ -78,8 +45,8 @@ describe("Shift Routes", () => {
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty("shift");
       expect(response.body.shift).toHaveProperty("id");
-      expect(response.body.shift.position).toBe("doctor");
-      expect(response.body.shift.rate).toBe("$80/hr");
+      expect(response.body.shift.position).toBe(mockShift.position);
+      expect(response.body.shift.rate).toBe(mockShift.rate);
       expect(response.body).toHaveProperty("evaluation");
       expect(response.body.evaluation).toHaveProperty("valid", true);
     });
@@ -105,7 +72,7 @@ describe("Shift Routes", () => {
       expect(response.status).toBe(200);
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBe(1);
-      expect(response.body[0]).toHaveProperty("position", "doctor");
+      expect(response.body[0]).toHaveProperty("position", mockShift.position);
     });
   });
 });

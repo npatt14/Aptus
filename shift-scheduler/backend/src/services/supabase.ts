@@ -18,9 +18,8 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-/**
- * Insert a new shift record into the database
- */
+// Inserts a new shift record into the Supabase database
+
 export const insertShift = async (shift: Shift): Promise<Shift> => {
   console.log("Inserting shift into Supabase:", shift);
 
@@ -36,12 +35,12 @@ export const insertShift = async (shift: Shift): Promise<Shift> => {
   }
 
   console.log("Successfully inserted shift, received:", data);
+
   return data as Shift;
 };
 
-/**
- * Get all shifts from the database
- */
+// Retrieves all shifts from the database, ordered by creation date
+
 export const getAllShifts = async (): Promise<Shift[]> => {
   console.log("Fetching all shifts from Supabase");
 

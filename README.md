@@ -55,11 +55,18 @@ The app should open at http://localhost:3000
 
 Just type natural language like "Need a parmacist next Monday from 9am to 5pm" in the form and hit submit. Feel free to have fun with testing edge cases!
 
-## Running tests
+### Backend Tests
+
+1. **OpenAI Service Tests** (`backend/src/__tests__/services/openAI.test.ts`)
+
+2. **API Integration Tests** (`backend/src/__tests__/integration/shiftRoutes.test.ts`)
+
+
+## Running Tests
 
 ```
-cd backend && npm test
-cd frontend && npm test
+cd shift-scheduler/backend
+npm test
 ```
 
 ## CI Pipeline
@@ -70,4 +77,4 @@ The CI pipeline:
 - Performs linting checks
 - Verifies that the project builds correctly
 
-For more details on the CI pipeline and how to expand it, see [.github/workflows/README.md](./shift-scheduler/github/workflows/README.md).
+For more details on the CI pipeline [.github/workflows/README.md](./shift-scheduler/github/workflows/README.md).
