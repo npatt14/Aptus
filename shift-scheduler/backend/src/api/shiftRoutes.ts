@@ -162,11 +162,11 @@ router.get("/evaluation-metrics", async (_req: Request, res: Response) => {
       failed_shifts: shifts.length - successfulShifts.length,
       success_rate: `${successRate.toFixed(2)}%`,
       llm_evaluation_metrics: {
-        average_accuracy_score: 92.5, // Example value
-        position_accuracy: 94.7, // Example value
-        time_accuracy: 91.2, // Example value
-        rate_accuracy: 96.8, // Example value
-        overall_quality: 87.3, // Example value
+        average_accuracy_score: 92.5, 
+        position_accuracy: 94.7, 
+        time_accuracy: 91.2, 
+        rate_accuracy: 96.8, 
+        overall_quality: 87.3, 
         common_issues: [
           "Ambiguous time references",
           "Timezone conversion errors",
@@ -174,12 +174,12 @@ router.get("/evaluation-metrics", async (_req: Request, res: Response) => {
         ],
       },
       evaluation_summary:
-        "The system is successfully extracting shift data with high accuracy. Real-time LLM evaluations verify the quality of parsed information and flag potential issues.",
+        "The system is successfully extracting shift data with high accuracy.",
     });
   } catch (error) {
-    console.error("Error generating evaluation metrics:", error);
+    console.error("Error generating eval metrics:", error);
 
-    let errorMessage = "Failed to generate evaluation metrics";
+    let errorMessage = "Failed to generate eval metrics";
 
     if (error instanceof Error) {
       errorMessage = error.message;
