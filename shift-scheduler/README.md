@@ -14,6 +14,7 @@
 3. Set up Supabase
 
    [supabase.com](https://supabase.com)
+
    - Create a new project
    - Get your Supabase URL and anon key from Project Settings > API
    - Add these to your `.env` file as `SUPABASE_URL` and `SUPABASE_KEY`
@@ -60,3 +61,22 @@ Just type natural language like "Need a parmacist next Monday from 9am to 5pm" i
 cd backend && npm test
 cd frontend && npm test
 ```
+
+## CI/CD Pipeline
+
+This project includes a Continuous Integration pipeline using GitHub Actions. The pipeline runs automatically on pushes to the main branch and pull requests.
+
+The CI pipeline:
+
+- Runs tests for both frontend and backend
+- Performs linting checks
+- Verifies that the project builds correctly
+
+For more details on the CI pipeline and how to expand it, see [.github/workflows/README.md](.github/workflows/README.md).
+
+## Contributing
+
+1. Create a new branch for your feature
+2. Make your changes
+3. Submit a pull request
+4. Ensure all CI checks pass before merging
