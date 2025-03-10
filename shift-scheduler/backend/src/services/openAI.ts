@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { OpenAIResponse } from "../types/shiftTypes";
 import { getCurrentDateForPrompt } from "./dateUtils";
-import { evaluateLLMResponse } from "./evaluationService";
+import { evaluateLLMResponse, performLLMEvaluation } from "./evaluationService";
 
 const isTestEnvironment = process.env.NODE_ENV === "test";
 const isDevelopmentEnvironment =
@@ -20,17 +20,40 @@ console.log(
   } environment`
 );
 
-// Initialize the OpenAI client with the real API key
+// Initialize the OpenAI client with key
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-
- // Parses a natural language shift description into structured data
+// Parses a natural language shift description into structured data
 export const parseShiftDescription = async (
   text: string,
   timezone: string
-): Promise<OpenAIResponse> => {
+): Promise<{
+  shiftData: OpenAIResponse;
+  evaluation: {
+    basic: {
+      valid: boolean;
+      results: {
+        requiredFields: boolean;
+        dateFormats: boolean;
+        timeSequence: boolean;
+        position: boolean;
+      };
+    };
+    advanced?: {
+      score: number;
+      feedback: string;
+      correct: boolean;
+      metrics: {
+        positionAccuracy: number;
+        timeAccuracy: number;
+        rateAccuracy: number;
+        overallQuality: number;
+      };
+    };
+  };
+}> => {
   const currentDate = getCurrentDateForPrompt(timezone);
 
   console.log(
@@ -102,17 +125,51 @@ If you cannot extract all required information, respond with:
     // Parse the JSON response into our expected structure
     const parsedResponse = JSON.parse(content) as OpenAIResponse;
 
-    // Use the evaluation service to validate the LLM response
-    const evaluation = evaluateLLMResponse(parsedResponse);
+    // Use the evaluation service to validate the LLM response structure and format
+    const basicEvaluation = evaluateLLMResponse(parsedResponse);
 
-    if (!evaluation.valid) {
-      console.error("LLM response evaluation failed", evaluation);
+    if (!basicEvaluation.valid) {
+      console.error("LLM response evaluation failed", basicEvaluation);
       throw new Error("LLM response failed validation checks");
+    }
+
+    // If we passed basic validation, perform the advanced evaluation
+    // Skip in test environment
+    let advancedEvaluation = undefined;
+    if (!isTestEnvironment) {
+      try {
+        advancedEvaluation = await performLLMEvaluation(
+          text,
+          parsedResponse,
+          timezone
+        );
+
+        // Log the evaluation results for monitoring
+        console.log("Advanced LLM Evaluation Results:", advancedEvaluation);
+
+        // If the advanced evaluation indicates the response is incorrect,
+        // we can still choose to proceed but with a warning
+        if (!advancedEvaluation.correct) {
+          console.warn(
+            "LLM response was flagged as potentially incorrect in advanced evaluation",
+            advancedEvaluation.feedback
+          );
+        }
+      } catch (evaluationError) {
+        // We'll log but not fail if the advanced evaluation fails
+        console.error("Advanced LLM evaluation failed:", evaluationError);
+      }
     }
 
     console.log("Successfully parsed and validated shift:", parsedResponse);
 
-    return parsedResponse;
+    return {
+      shiftData: parsedResponse,
+      evaluation: {
+        basic: basicEvaluation,
+        advanced: advancedEvaluation,
+      },
+    };
   } catch (error) {
     console.error("Error processing OpenAI response:", error);
 

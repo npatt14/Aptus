@@ -88,6 +88,63 @@ interface Shift {
 - Input validation and sanitization
 - Error handling that prevents information leakage
 
+## Automated LLM Evaluation System
+
+This system implements a comprehensive LLM evaluation framework to verify the functionality and accuracy of AI-generated responses in production.
+
+### Evaluation Approach
+
+Our LLM evaluation system employs a multi-layered approach:
+
+1. **Basic Structural Validation**: First-pass validation checking for required fields, correct data formats, logical time sequences, and valid position data.
+
+2. **LLM-based Semantic Validation**: A separate LLM evaluation call that reviews the parsing results against the original input, providing detailed quality metrics and assessment.
+
+3. **Automated Test Suite**: Dedicated tests that directly evaluate the LLM's performance across various input scenarios without relying on mocks.
+
+### Evaluation Metrics
+
+The system tracks several key metrics:
+
+- **Position Accuracy**: Measures accuracy in identifying healthcare roles (0-100)
+- **Time Accuracy**: Evaluates correctness of start/end time parsing (0-100)
+- **Rate Accuracy**: Assesses accurate parsing of compensation rates (0-100)
+- **Overall Quality**: Holistic measure of parse quality and completeness (0-100)
+
+### Implementation Details
+
+- **Dual-LLM Architecture**: Uses a separate LLM call to independently evaluate the primary LLM's output
+- **Non-mocked Tests**: Real API calls test actual LLM behavior in various scenarios
+- **Performance Monitoring**: Aggregates evaluation metrics to track system accuracy over time
+- **Error Analysis**: Provides detailed feedback on parsing issues to guide improvements
+
+### Example Evaluation Response
+
+```json
+{
+  "basic": {
+    "valid": true,
+    "results": {
+      "requiredFields": true,
+      "dateFormats": true,
+      "timeSequence": true,
+      "position": true
+    }
+  },
+  "advanced": {
+    "score": 92.3,
+    "feedback": "The system correctly identified the healthcare role, time requirements, and compensation rate.",
+    "correct": true,
+    "metrics": {
+      "positionAccuracy": 95,
+      "timeAccuracy": 90,
+      "rateAccuracy": 98,
+      "overallQuality": 86
+    }
+  }
+}
+```
+
 ## Planned Enhancements
 
 ### Near-term

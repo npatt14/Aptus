@@ -1,5 +1,5 @@
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
-import { Shift } from "../../types/shiftTypes";
+import { Shift, ShiftEvaluation } from "../../types/shiftTypes";
 import {
   mockShift,
   mockOpenAIResponse,
@@ -10,7 +10,23 @@ import request from "supertest";
 
 // Mock the required modules
 jest.mock("../../services/openAI", () => ({
-  parseShiftDescription: jest.fn().mockImplementation(() => mockOpenAIResponse),
+  parseShiftDescription: jest.fn().mockImplementation(() => ({
+    shiftData: mockOpenAIResponse,
+    evaluation: {
+      basic: createEvaluationResponse(),
+      advanced: {
+        score: 95.5,
+        feedback: "Excellent parsing of the shift information.",
+        correct: true,
+        metrics: {
+          positionAccuracy: 100,
+          timeAccuracy: 95,
+          rateAccuracy: 100,
+          overallQuality: 87,
+        },
+      },
+    },
+  })),
 }));
 
 jest.mock("../../services/supabase", () => ({
@@ -22,6 +38,17 @@ jest.mock("../../services/evaluationService", () => ({
   evaluateLLMResponse: jest
     .fn()
     .mockImplementation(() => createEvaluationResponse()),
+  performLLMEvaluation: jest.fn().mockImplementation(() => ({
+    score: 95.5,
+    feedback: "Excellent parsing of the shift information.",
+    correct: true,
+    metrics: {
+      positionAccuracy: 100,
+      timeAccuracy: 95,
+      rateAccuracy: 100,
+      overallQuality: 87,
+    },
+  })),
 }));
 
 // Import dependencies after mocks are set up
@@ -48,7 +75,11 @@ describe("Shift Routes", () => {
       expect(response.body.shift.position).toBe(mockShift.position);
       expect(response.body.shift.rate).toBe(mockShift.rate);
       expect(response.body).toHaveProperty("evaluation");
-      expect(response.body.evaluation).toHaveProperty("valid", true);
+      expect(response.body.evaluation).toHaveProperty("basic");
+      expect(response.body.evaluation.basic).toHaveProperty("valid", true);
+      expect(response.body.evaluation).toHaveProperty("advanced");
+      expect(response.body.evaluation.advanced).toHaveProperty("score");
+      expect(response.body.evaluation.advanced).toHaveProperty("correct", true);
     });
 
     test("returns 400 when missing shift description", async () => {

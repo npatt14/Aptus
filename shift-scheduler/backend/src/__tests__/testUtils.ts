@@ -1,4 +1,10 @@
-import { Shift, OpenAIResponse } from "../types/shiftTypes";
+import {
+  Shift,
+  OpenAIResponse,
+  BasicEvaluation,
+  AdvancedEvaluation,
+  ShiftEvaluation,
+} from "../types/shiftTypes";
 import express from "express";
 
 /**
@@ -39,9 +45,9 @@ export const createTestApp = (router: express.Router) => {
 };
 
 /**
- * Creates an evaluation response for tests
+ * Creates a basic evaluation response for tests
  */
-export const createEvaluationResponse = (valid = true) => ({
+export const createEvaluationResponse = (valid = true): BasicEvaluation => ({
   valid,
   results: {
     requiredFields: true,
@@ -49,4 +55,37 @@ export const createEvaluationResponse = (valid = true) => ({
     timeSequence: true,
     position: true,
   },
+});
+
+/**
+ * Creates an advanced evaluation response for tests
+ */
+export const createAdvancedEvaluationResponse = (
+  correct = true
+): AdvancedEvaluation => ({
+  score: correct ? 95.5 : 45.2,
+  feedback: correct
+    ? "Excellent parsing of the shift information."
+    : "There were significant errors in parsing the shift information.",
+  correct,
+  metrics: {
+    positionAccuracy: correct ? 100 : 20,
+    timeAccuracy: correct ? 95 : 40,
+    rateAccuracy: correct ? 100 : 60,
+    overallQuality: correct ? 87 : 30,
+  },
+});
+
+/**
+ * Creates a complete shift evaluation for tests
+ */
+export const createShiftEvaluation = (
+  validBasic = true,
+  includeAdvanced = true,
+  correctAdvanced = true
+): ShiftEvaluation => ({
+  basic: createEvaluationResponse(validBasic),
+  advanced: includeAdvanced
+    ? createAdvancedEvaluationResponse(correctAdvanced)
+    : undefined,
 });
