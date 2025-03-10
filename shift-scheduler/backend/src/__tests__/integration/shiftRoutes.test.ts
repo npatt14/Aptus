@@ -5,27 +5,19 @@ import {
   mockOpenAIResponse,
   createTestApp,
   createEvaluationResponse,
+  createShiftEvaluation,
 } from "../testUtils";
 import request from "supertest";
+
+// NOTE: This test file uses mocks for API integration testing.
+// It is NOT intended to validate the LLM's responses - that's done in llmEvaluation.test.ts
+// These tests just ensure the API endpoints function correctly regardless of LLM output.
 
 // Mock the required modules
 jest.mock("../../services/openAI", () => ({
   parseShiftDescription: jest.fn().mockImplementation(() => ({
     shiftData: mockOpenAIResponse,
-    evaluation: {
-      basic: createEvaluationResponse(),
-      advanced: {
-        score: 95.5,
-        feedback: "Excellent parsing of the shift information.",
-        correct: true,
-        metrics: {
-          positionAccuracy: 100,
-          timeAccuracy: 95,
-          rateAccuracy: 100,
-          overallQuality: 87,
-        },
-      },
-    },
+    evaluation: createShiftEvaluation(true, true, true),
   })),
 }));
 
@@ -57,7 +49,7 @@ import shiftRoutes from "../../api/shiftRoutes";
 // Create a test Express app
 const app = createTestApp(shiftRoutes);
 
-describe("Shift Routes", () => {
+describe("Shift Routes Integration Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

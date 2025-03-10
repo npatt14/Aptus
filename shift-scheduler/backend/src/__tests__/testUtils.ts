@@ -23,7 +23,7 @@ export const mockShift: Shift = {
 };
 
 /**
- * Mock data for Openai responses
+ * Mock data for Openia responses
  */
 export const mockOpenAIResponse: OpenAIResponse = {
   position: "doctor",

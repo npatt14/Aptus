@@ -7,7 +7,9 @@
     "start": "node dist/index.js",
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "test:llm": "jest -t \"LLM Evaluation Tests\"",
+    "test:unit": "jest -t \"OpenAI Service Unit Tests|Shift Routes Integration Tests\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",

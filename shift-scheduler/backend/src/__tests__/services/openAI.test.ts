@@ -1,7 +1,14 @@
 import { describe, expect, jest, test } from "@jest/globals";
-import { mockOpenAIResponse, createEvaluationResponse } from "../testUtils";
+import {
+  mockOpenAIResponse,
+  createEvaluationResponse,
+  createShiftEvaluation,
+} from "../testUtils";
 
-// Set up mockks for everythng except the module being tested
+// This test file uses mocks for unit testing specific components
+// It is !!NOT!! intended to validate the LLM's responses - that's done in llmEvaluation.test.ts
+// These tests just ensure the openAI service handles data properly, errors correctly, etc etc etc.
+
 jest.mock("../../services/dateUtils", () => ({
   getCurrentDateForPrompt: jest
     .fn()
@@ -13,6 +20,17 @@ jest.mock("../../services/evaluationService", () => ({
   evaluateLLMResponse: jest
     .fn()
     .mockImplementation(() => createEvaluationResponse()),
+  performLLMEvaluation: jest.fn().mockImplementation(() => ({
+    score: 95.5,
+    feedback: "Excellent parsing of the shift information.",
+    correct: true,
+    metrics: {
+      positionAccuracy: 100,
+      timeAccuracy: 95,
+      rateAccuracy: 100,
+      overallQuality: 87,
+    },
+  })),
 }));
 
 // Create a mock OpenAI class
@@ -46,13 +64,13 @@ jest.mock("openai", () => {
 // Import the function under test after all mocks are set up
 import { parseShiftDescription } from "../../services/openAI";
 
-describe("OpenAI Service", () => {
+describe("OpenAI Service Unit Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe("parseShiftDescription", () => {
-    test("successfully parses a valid shift description", async () => {
+    test("successfully processes a valid response", async () => {
       // Set up test data
       const text = "Need a nurse tomorrow from 9am to 5pm at $25/hr";
       const timezone = "America/New_York";
@@ -62,10 +80,16 @@ describe("OpenAI Service", () => {
 
       // Verify results
       expect(result).toBeDefined();
-      expect(result.position).toBe(mockOpenAIResponse.position);
-      expect(result.start_time).toBe(mockOpenAIResponse.start_time);
-      expect(result.end_time).toBe(mockOpenAIResponse.end_time);
-      expect(result.rate).toBe(mockOpenAIResponse.rate);
+      expect(result.shiftData).toBeDefined();
+      expect(result.shiftData.position).toBe(mockOpenAIResponse.position);
+      expect(result.shiftData.start_time).toBe(mockOpenAIResponse.start_time);
+      expect(result.shiftData.end_time).toBe(mockOpenAIResponse.end_time);
+      expect(result.shiftData.rate).toBe(mockOpenAIResponse.rate);
+
+      // Verify evaluation structure
+      expect(result.evaluation).toBeDefined();
+      expect(result.evaluation.basic).toBeDefined();
+      expect(result.evaluation.basic.valid).toBe(true);
 
       // Verify the mock was called correctly
       expect(createMock).toHaveBeenCalled();

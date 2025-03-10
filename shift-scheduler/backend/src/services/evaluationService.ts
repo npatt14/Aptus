@@ -1,10 +1,6 @@
 import { OpenAIResponse } from "../types/shiftTypes";
 import { isValidISODateString } from "./dateUtils";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { openai } from "./apiClient";
 
 /**
  * Basic validation of LLM response structure and data format

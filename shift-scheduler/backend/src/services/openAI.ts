@@ -1,29 +1,13 @@
-import OpenAI from "openai";
 import { OpenAIResponse } from "../types/shiftTypes";
 import { getCurrentDateForPrompt } from "./dateUtils";
 import { evaluateLLMResponse, performLLMEvaluation } from "./evaluationService";
+import { openai } from "./apiClient";
 
 const isTestEnvironment = process.env.NODE_ENV === "test";
 const isDevelopmentEnvironment =
   process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
 const isNonProductionEnvironment =
   isTestEnvironment || isDevelopmentEnvironment;
-
-// Check for API key
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("Missing OpenAI API key");
-}
-
-console.log(
-  `OpenAI initialized with API key in ${
-    process.env.NODE_ENV || "development"
-  } environment`
-);
-
-// Initialize the OpenAI client with key
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 // Parses a natural language shift description into structured data
 export const parseShiftDescription = async (
@@ -62,7 +46,6 @@ export const parseShiftDescription = async (
   console.log(`Current date for context: ${currentDate}`);
 
   // Construct a detailed system prompt with instructions and validation requirements
-  // !!!!MAKE SURE LLM IS AWARE OF USERS DATE AND TIMEZONE!!!!
   const systemPrompt = `
 You are a healthcare shift scheduling assistant. Your task is to parse natural language descriptions of shifts into structured data.
 Today's date is ${currentDate} in the user's timezone (${timezone}).
@@ -107,7 +90,6 @@ If you cannot extract all required information, respond with:
       { role: "user", content: text },
     ],
     temperature: 0.2, // Lower temperature for more deterministic outputs
-    // Note: Removed response_format which is not supported with gpt-4
   });
 
   console.log("Received response from OpenAI");

@@ -2,12 +2,11 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  roots: ["<rootDir>/src"],
-  transform: {
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  testRegex: "(/__tests__/.*\\.(test|spec))\\.tsx?$",
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  // Setup files to run before tests
-  setupFiles: ["<rootDir>/src/__tests__/setup.js"],
+  verbose: true,
+  setupFilesAfterEnv: ["./src/__tests__/setup.js"],
+  testMatch: ["**/__tests__/**/*.test.ts"],
+  clearMocks: true,
+  resetMocks: false, // Don't reset mocks between tests
+  resetModules: false, // Don't reset modules between tests
+  testTimeout: 30000, // 30 second timeout for API calls
 };
