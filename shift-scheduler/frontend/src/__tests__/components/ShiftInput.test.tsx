@@ -1,33 +1,33 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "../test-utils";
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import ShiftInput from "../../components/ShiftInput";
-import * as ShiftContext from "../../context/ShiftContext";
 
 // Mock the context hook
 jest.mock("../../context/ShiftContext", () => ({
-  ...jest.requireActual("../../context/ShiftContext"),
-  useShifts: jest.fn(),
+  useShifts: jest.fn().mockImplementation(() => ({
+    submitShift: jest.fn().mockResolvedValue(undefined),
+    loading: false,
+    error: null,
+    shifts: [],
+    refreshShifts: jest.fn(),
+    submissionSuccess: false,
+    clearSubmissionStatus: jest.fn(),
+  })),
 }));
+
+// Import after mocking
+import { useShifts } from "../../context/ShiftContext";
 
 describe("ShiftInput Component", () => {
   beforeEach(() => {
-    // Reset mocks and provide default implementation
     jest.clearAllMocks();
-    jest.spyOn(ShiftContext, "useShifts").mockImplementation(() => ({
-      submitShift: jest.fn().mockResolvedValue(undefined),
-      loading: false,
-      error: null,
-      shifts: [],
-      refreshShifts: jest.fn(),
-      submissionSuccess: false,
-      clearSubmissionStatus: jest.fn(),
-    }));
   });
 
   test("allows user to input text and submit the form", async () => {
     // Setup mock for submitShift function
     const submitShiftMock = jest.fn().mockResolvedValue(undefined);
-    jest.spyOn(ShiftContext, "useShifts").mockImplementation(() => ({
+    (useShifts as jest.Mock).mockImplementation(() => ({
       submitShift: submitShiftMock,
       loading: false,
       error: null,
@@ -68,12 +68,8 @@ describe("ShiftInput Component", () => {
 
   test("disables input and shows loading state during submission", async () => {
     // Mock the loading state
-    jest.spyOn(ShiftContext, "useShifts").mockImplementation(() => ({
-      submitShift: jest
-        .fn()
-        .mockImplementation(
-          () => new Promise((resolve) => setTimeout(resolve, 100))
-        ),
+    (useShifts as jest.Mock).mockImplementation(() => ({
+      submitShift: jest.fn(),
       loading: true,
       error: null,
       shifts: [],
