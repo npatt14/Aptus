@@ -39,6 +39,7 @@ export const parseShiftDescription = async (
   console.log(`Current date for context: ${currentDate}`);
 
   // Construct a detailed system prompt with instructions and validation requirements
+  // !!!!MAKE SURE LLM IS AWARE OF USERS DATE AND TIMEZONE!!!!
   const systemPrompt = `
 You are a healthcare shift scheduling assistant. Your task is to parse natural language descriptions of shifts into structured data.
 Today's date is ${currentDate} in the user's timezone (${timezone}).

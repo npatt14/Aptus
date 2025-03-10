@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { createShift, getAllShifts } from "../api/shiftAPI";
 
-// Define types
+// types
 interface Shift {
   id: string;
   position: string;
@@ -80,7 +80,7 @@ export const ShiftProvider: React.FC<{ children: ReactNode }> = ({
     setSubmissionSuccess(false);
 
     try {
-      // Create shift - only one API call needed as the response includes the shift data
+      // Create shift - only one API call needed 
       const response = await createShift(text);
 
       // Update shifts by adding the new shift to the existing array
