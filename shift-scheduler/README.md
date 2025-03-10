@@ -13,7 +13,7 @@
 
 3. Set up Supabase
 
-   - Create a Supabase account at [supabase.com](https://supabase.com)
+   [supabase.com](https://supabase.com)
    - Create a new project
    - Get your Supabase URL and anon key from Project Settings > API
    - Add these to your `.env` file as `SUPABASE_URL` and `SUPABASE_KEY`
