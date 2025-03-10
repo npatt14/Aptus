@@ -70,4 +70,4 @@ The CI pipeline:
 - Performs linting checks
 - Verifies that the project builds correctly
 
-For more details on the CI pipeline and how to expand it, see [.github/workflows/README.md](.github/workflows/README.md).
+For more details on the CI pipeline and how to expand it, see [.github/workflows/README.md](./shift-scheduler/github/workflows/README.md).
