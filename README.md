@@ -62,9 +62,7 @@ cd backend && npm test
 cd frontend && npm test
 ```
 
-## CI/CD Pipeline
-
-This project includes a Continuous Integration pipeline using GitHub Actions. The pipeline runs automatically on pushes to the main branch and pull requests.
+## CI Pipeline
 
 The CI pipeline:
 
@@ -73,10 +71,3 @@ The CI pipeline:
 - Verifies that the project builds correctly
 
 For more details on the CI pipeline and how to expand it, see [.github/workflows/README.md](.github/workflows/README.md).
-
-## Contributing
-
-1. Create a new branch for your feature
-2. Make your changes
-3. Submit a pull request
-4. Ensure all CI checks pass before merging
