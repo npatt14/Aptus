@@ -40,31 +40,6 @@ export interface ApiResponse {
 }
 
 /**
- * Post a new shift to the API
- */
-export const postShift = async (text: string, timezone: string) => {
-  try {
-    const response = await api.post(
-      "/api/shifts",
-      {
-        text,
-      },
-      {
-        headers: {
-          "X-Timezone": timezone,
-        },
-      }
-    );
-
-    // The response will now contain both shift and evaluation data
-    return response.data;
-  } catch (error) {
-    console.error("Error posting shift:", error);
-    throw error;
-  }
-};
-
-/**
  * Create a new shift from natural language input
  */
 export const createShift = async (text: string): Promise<ApiResponse> => {
