@@ -1,80 +1,152 @@
 # Healthcare Shift Scheduler
 
-## Setup
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/yourusername/healthcare-hiring)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-1. Clone this repo
+A sophisticated AI-powered healthcare shift scheduling application that transforms natural language inputs into structured shift data for healthcare administrators.
+
+![Healthcare Shift Scheduler Demo](./assets/demo-screenshot.png)
+
+## 🚀 Features
+
+- **Natural Language Parsing** - Enter shift requirements using everyday language ("Need a nurse tomorrow from 9am to 5pm at $30/hr")
+- **AI-Powered Interpretation** - Leverages GPT-4 to understand context, dates, times, roles, and compensation
+- **Advanced LLM Evaluation** - Uses dual-LLM architecture to verify response accuracy and quality
+- **Timezone Awareness** - Correctly handles timezone conversions for shift scheduling
+- **Modern React UI** - Clean, responsive interface built with React and Tailwind CSS
+- **Robust API Backend** - Node.js/Express backend with TypeScript for type safety
+- **Production-Ready Testing** - Comprehensive test suite with real LLM evaluation tests
+
+## 🔧 Technology Stack
+
+### Frontend
+
+- React 18
+- TypeScript
+- Tailwind CSS
+- Context API for state management
+- Axios for API communication
+
+### Backend
+
+- Node.js with Express
+- TypeScript
+- OpenAI API (GPT-4)
+- Supabase (PostgreSQL)
+- Jest for testing
+
+### Infrastructure
+
+- GitHub Actions for CI/CD
+- Containerization ready
+
+## 📊 Advanced LLM Evaluation System
+
+A key feature of this application is its sophisticated LLM evaluation system:
+
+1. **Dual-LLM Architecture** - Uses a second LLM call to independently evaluate the output quality of the first LLM
+2. **Comprehensive Metrics** - Evaluates position accuracy, time accuracy, rate accuracy, and overall quality
+3. **Non-Mocked LLM Testing** - Real API calls verify actual model behavior in tests
+4. **Production Verification** - Ensures AI responses meet quality standards before displaying to users
+
+## 🛠️ Setup Instructions
+
+### Prerequisites
+
+- Node.js (v16+)
+- npm or yarn
+- OpenAI API key
+- Supabase account (free tier works fine)
+
+### Backend Setup
+
+1. Clone this repository
+
+   ```bash
+   git clone https://github.com/yourusername/healthcare-hiring.git
+   cd healthcare-hiring/shift-scheduler
+   ```
+
 2. Set up the backend
 
-   ```
+   ```bash
    cd backend
    npm install
-   cp .env.example .env  # Don't forget to add your API keys
+   cp .env.example .env
    ```
 
-3. Set up Supabase
+3. Add your API keys to `.env`
 
-   [supabase.com](https://supabase.com)
-
-   - Create a new project
-   - Get your Supabase URL and anon key from Project Settings > API
-   - Add these to your `.env` file as `SUPABASE_URL` and `SUPABASE_KEY`
-   - Initialize your database schema by running the SQL script:
-     ```
-     # Navigate to your Supabase project's SQL Editor
-     # Copy and paste the contents of scripts/setupSupabase.sql
-     # Run the script to create the required tables and triggers
-     ```
-
-4. Set up the frontend
    ```
-   cd ../frontend
-   npm install
+   OPENAI_API_KEY=your_openai_api_key
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_KEY=your_supabase_anon_key
    ```
 
-## Running the app
+4. Set up Supabase
+   - Create a new Supabase project at [supabase.com](https://supabase.com)
+   - Navigate to the SQL Editor in your Supabase dashboard
+   - Run the SQL script in `scripts/setupSupabase.sql` to create tables
+
+### Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+## 🚀 Running the Application
 
 You'll need two terminal windows:
 
 **Terminal 1 (Backend)**
 
-```
+```bash
 cd backend
 npm run dev
 ```
 
 **Terminal 2 (Frontend)**
 
-```
+```bash
 cd frontend
 npm start
 ```
 
-The app should open at http://localhost:3000
+The application will open at http://localhost:3000
 
-## How to use
+## 🧪 Running Tests
 
-Just type natural language like "Need a parmacist next Monday from 9am to 5pm" in the form and hit submit. Feel free to have fun with testing edge cases!
-
-### Backend Tests
-
-1. **OpenAI Service Tests** (`backend/src/__tests__/services/openAI.test.ts`)
-
-2. **API Integration Tests** (`backend/src/__tests__/integration/shiftRoutes.test.ts`)
-
-
-## Running Tests
-
-```
-cd shift-scheduler/backend
-npm test
+```bash
+cd backend
+npm test          # Run all tests
+npm run test:llm  # Run only LLM evaluation tests (requires API key)
+npm run test:unit # Run unit/integration tests
 ```
 
-## CI Pipeline
+## 📝 Key Files to Explore
 
-The CI pipeline:
+- **LLM Evaluation**: `backend/src/__tests__/services/llmEvaluation.test.ts`
+- **Evaluation Service**: `backend/src/services/evaluationService.ts`
+- **OpenAI Service**: `backend/src/services/openAI.ts`
+- **API Routes**: `backend/src/api/shiftRoutes.ts`
 
-- Runs tests for both frontend and backend
-- Performs linting checks
-- Verifies that the project builds correctly
+## 🤝 Contributing
 
-For more details on the CI pipeline [.github/workflows/README.md](./shift-scheduler/github/workflows/README.md).
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🔮 Future Enhancements
+
+- User authentication and authorization
+- Role-based access control
+- Calendar integration
+- Mobile application
+- Advanced analytics dashboard
+
+---
+
+⭐️ If you found this project interesting, please consider giving it a star on GitHub! ⭐️
