@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/yourusername/healthcare-hiring)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A sophisticated AI-powered healthcare shift scheduling application that transforms natural language inputs into structured shift data for healthcare administrators.
+An AI-powered healthcare shift scheduling application that transforms natural language inputs into structured shift data for healthcare administrators.
 
 ![Healthcare Shift Scheduler Demo](./assets/demo-screenshot.png)
 
@@ -35,14 +35,9 @@ A sophisticated AI-powered healthcare shift scheduling application that transfor
 - Supabase (PostgreSQL)
 - Jest for testing
 
-### Infrastructure
-
-- GitHub Actions for CI/CD
-- Containerization ready
-
 ## 📊 Advanced LLM Evaluation System
 
-A key feature of this application is its sophisticated LLM evaluation system:
+A key feature of this application is its  LLM evaluation system:
 
 1. **Dual-LLM Architecture** - Uses a second LLM call to independently evaluate the output quality of the first LLM
 2. **Comprehensive Metrics** - Evaluates position accuracy, time accuracy, rate accuracy, and overall quality
@@ -113,7 +108,7 @@ cd frontend
 npm start
 ```
 
-The application will open at http://localhost:3000
+The app will open at http://localhost:3000
 
 ## 🧪 Running Tests
 
@@ -131,22 +126,4 @@ npm run test:unit # Run unit/integration tests
 - **OpenAI Service**: `backend/src/services/openAI.ts`
 - **API Routes**: `backend/src/api/shiftRoutes.ts`
 
-## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🔮 Future Enhancements
-
-- User authentication and authorization
-- Role-based access control
-- Calendar integration
-- Mobile application
-- Advanced analytics dashboard
-
----
-
-⭐️ If you found this project interesting, please consider giving it a star on GitHub! ⭐️
